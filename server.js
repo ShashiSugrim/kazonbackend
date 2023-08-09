@@ -18,6 +18,6 @@ app.get("/", (req, res) => {
 app.use("/products", productRoutes);
 app.post("/login", controller.loginUser);
 app.post("/createAccount", controller.createAccount);
-
+app.get("/search/:searchQ", controller.getProductSearch);
 
 app.listen(port, () => console.log(`app listening on port ${port}`));

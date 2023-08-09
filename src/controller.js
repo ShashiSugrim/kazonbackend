@@ -67,11 +67,21 @@ const createAccount = async (req, res) =>
   }
 }
 
+const getProductSearch = async (req, res) =>
+{
+  let searchQuery = req.params.searchQ;
+  const results = await pool.query(queries.searchQuery, [`${searchQuery}`]);
+
+  console.log("results are " + results.rows);
+  // res.status(201).send("successfully searched for " + searchQuery);
+  res.status(201).send(results.rows);
+}
 
 
 module.exports = {
   getProducts,
   getProductById,
   loginUser,
-  createAccount
+  createAccount,
+  getProductSearch
 };
