@@ -1,6 +1,9 @@
 const pool = require("./db");
 const queries = require("./queries");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
+
 
 
 const getProducts = (req, res) => {
@@ -27,6 +30,7 @@ const loginUser = async (req, res) =>
   if(userExists.rowCount == 0)
   {
     console.log("This user does not exist");
+    return res.send("this user does not exist");
   } else
   {
     password = userExists.rows[0].password;
@@ -39,13 +43,23 @@ const loginUser = async (req, res) =>
   if (await bcrypt.compare(req.body.password, password))
     {
       console.log("bcrypt says this is a good password");
-      res.send("success");
+
+      const user = {email: email};
+      const accessToken = generateAccessToken(user);
+      return res.json({accessToken:accessToken});
+      
+
+      // return res.send("success");
     } else {
       console.log("bcrypt says this is NOT a good password");
 
-      res.send("not allowed");
+      return res.send("not allowed");
     }
-  res.status(201).send();
+}
+
+function generateAccessToken(user)
+{
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
 }
 
 const createAccount = async (req, res) =>
