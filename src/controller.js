@@ -91,11 +91,26 @@ const getProductSearch = async (req, res) =>
   res.status(201).send(results.rows);
 }
 
+const getCart = async (req, res) =>
+{
+  let email = req.user.email;
+  const results = await pool.query(queries.getCartQuery, [email]);
+  res.json(results.rows);
+
+}
+
+const createReport = (req, res) =>
+{
+  let email = req.user.email;
+
+}
 
 module.exports = {
   getProducts,
   getProductById,
   loginUser,
   createAccount,
-  getProductSearch
+  getProductSearch,
+  getCart,
+  createReport
 };
