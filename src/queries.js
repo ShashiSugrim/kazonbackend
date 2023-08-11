@@ -5,6 +5,9 @@ const addUser = "INSERT INTO USERS(email, password) VALUES ($1, $2)";
 const searchQuery = "SELECT * from PRODUCTS where $1 = ANY(topics);";
 const getCartQuery = "SELECT * FROM CART WHERE email =$1";
 const createReportQuery = "";
+const checkCart = 'SELECT * FROM (SELECT * FROM CART WHERE email =$1) topics WHERE topics.product_id = $2;'
+const addCart = 'INSERT INTO CART(email, product_id) VALUES ($1, $2)';
+const deleteFromCart = 'DELETE FROM CART WHERE email=$1 AND product_id = $2;'
 
 module.exports = {
   getProducts,
@@ -13,5 +16,8 @@ module.exports = {
   addUser,
   searchQuery,
   getCartQuery,
-  createReportQuery
+  createReportQuery,
+  checkCart,
+  addCart,
+  deleteFromCart
 };

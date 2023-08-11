@@ -105,6 +105,39 @@ const createReport = (req, res) =>
 
 }
 
+const addToCart = async (req, res) =>
+{
+  let email = req.user.email;
+  let productID = req.params.id;
+
+  const userCart = await pool.query(queries.checkCart, [email, productID]);
+  if(userCart.rowCount > 0)
+  {
+    return res.status(403).send('already have item in cart');
+  }
+  pool.query(queries.addCart, [`${email}`, `${productID}`], (err, results)=>
+  {
+    if(err) throw err;
+    res.status(201).send("successfully added item to cart");
+  });
+}
+
+const deleteFromCart = async (req, res) =>
+{
+  let email = req.user.email;
+  let productID = req.params.id;
+
+  const userCart = await pool.query(queries.checkCart, [email, productID]);
+  if(userCart.rowCount == 0)
+  {
+    return res.status(403).send('item does not exist in cart');
+  }
+  pool.query(queries.deleteFromCart, [`${email}`, `${productID}`], (err, results)=>{
+    if(err) throw err;
+    res.status(201).send("successfully removed item to cart");
+  })
+}
+
 module.exports = {
   getProducts,
   getProductById,
@@ -112,5 +145,7 @@ module.exports = {
   createAccount,
   getProductSearch,
   getCart,
-  createReport
+  createReport,
+  addToCart,
+  deleteFromCart
 };

@@ -34,5 +34,8 @@ app.post("/createAccount", controller.createAccount);
 app.get("/search/:searchQ", controller.getProductSearch);
 app.get("/cart", authenticateToken, controller.getCart);
 app.post("/report", authenticateToken, controller.createReport);
+app.post('/addToCart/:id', authenticateToken, controller.addToCart);
+app.delete('/deleteFromCart/:id', authenticateToken, controller.deleteFromCart);
+
 
 app.listen(port, () => console.log(`app listening on port ${port}`));
