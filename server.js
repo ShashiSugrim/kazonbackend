@@ -18,6 +18,8 @@ app.get("/", (req, res) => {
 function authenticateToken(req, res, next){
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[0];
+  console.log("user wants to come but token is " + authHeader);
+
   if(token == null) return res.sendStatus(401)
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>
@@ -34,8 +36,8 @@ app.post("/createAccount", controller.createAccount);
 app.get("/search/:searchQ", controller.getProductSearch);
 app.get("/cart", authenticateToken, controller.getCart);
 app.post("/report", authenticateToken, controller.createReport);
-app.post('/addToCart/:id', authenticateToken, controller.addToCart);
-app.delete('/deleteFromCart/:id', authenticateToken, controller.deleteFromCart);
+app.post('/addToCart', authenticateToken, controller.addToCart);
+app.delete('/deleteFromCart', authenticateToken, controller.deleteFromCart);
 
 
 app.listen(port, () => console.log(`app listening on port ${port}`));
