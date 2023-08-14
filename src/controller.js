@@ -86,7 +86,7 @@ const getProductSearch = async (req, res) =>
   let searchQuery = req.params.searchQ;
   const results = await pool.query(queries.searchQuery, [`${searchQuery}`]);
 
-  console.log("results are " + results.rows);
+  console.log("results are " + JSON.stringify(results.rows));
   // res.status(201).send("successfully searched for " + searchQuery);
   res.status(201).send(results.rows);
 }
@@ -95,25 +95,34 @@ const getCart = async (req, res) =>
 {
   let email = req.user.email;
   const results = await pool.query(queries.getCartQuery, [email]);
-  res.json(results.rows);
+  let productArr = [];
+  for(let productID = 0;productID<results.rowCount;productID++)
+  {
+    let result = await pool.query(queries.getProductById, [results.rows[productID].product_id]);
+    productArr.push(result.rows[0])
+  }
+  console.log("productArr" + JSON.stringify(productArr));
+  res.json(productArr);
 
 }
 
 const createReport = (req, res) =>
 {
   let email = req.user.email;
-
+  let reportText = req.body.text;
+  console.log("this is report text: " + reportText);
+  res.send("this is your report: " + reportText)
 }
 
 const addToCart = async (req, res) =>
 {
   let email = req.user.email;
-  let productID = req.params.id;
+  let productID = req.body.id;
 
   const userCart = await pool.query(queries.checkCart, [email, productID]);
   if(userCart.rowCount > 0)
   {
-    return res.status(403).send('already have item in cart');
+    return res.status(408).send('already have item in cart');
   }
   pool.query(queries.addCart, [`${email}`, `${productID}`], (err, results)=>
   {
@@ -125,7 +134,7 @@ const addToCart = async (req, res) =>
 const deleteFromCart = async (req, res) =>
 {
   let email = req.user.email;
-  let productID = req.params.id;
+  let productID = req.body.id;
 
   const userCart = await pool.query(queries.checkCart, [email, productID]);
   if(userCart.rowCount == 0)
