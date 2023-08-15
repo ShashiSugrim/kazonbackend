@@ -110,17 +110,17 @@ const createReport = async (req, res) =>
 {
   let email = req.user.email;
   let reportText = req.body.text;
-  let userReportCountResult = await pool.query(queries.getUserReportCount, [email]).rows[0].count;
+  let userReportCountResult = await pool.query(queries.getUserReportCount, [email])
   // Code below checks if user gets over 5 report limit
-  if (userReportCount >= 5){
+  if (userReportCountResult.rowCount >= 5){
     return res.status(403).json ({
       error: "User has reached the max report limit"
     });
   }
   // Code below : have to insert the report data in the database
   //Inserting the report in the database
-  await pool.query(queries.createReportQuery, [contentId, reason, email]);
-console.error("Report creating Error: ", error);
+  await pool.query(queries.createReportQuery, [email, reportText]);
+  res.status(203).send("Successfully added report");
 }
 
 const addToCart = async (req, res) =>
