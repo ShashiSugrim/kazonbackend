@@ -1,0 +1,26 @@
+CREATE TABLE USERS(
+    email VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE cart (
+    email VARCHAR(255) REFERENCES users(email) ON DELETE CASCADE,
+    product_id INT REFERENCES products(id) ON DELETE CASCADE,
+    PRIMARY KEY (email, product_id)
+);
+
+CREATE TABLE REPORT(
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255),
+    email VARCHAR(255),
+    FOREIGN KEY (email) REFERENCES USERS(email) ON DELETE CASCADE
+);
+
+CREATE TABLE PRODUCTS(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    price VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+    imgurl VARCHAR(255),
+    topics VARCHAR(255)[]
+);
